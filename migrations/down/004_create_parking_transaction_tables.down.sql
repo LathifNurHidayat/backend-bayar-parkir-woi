@@ -1,0 +1,4 @@
+
+-- ROLLBACK MIGRATION 004
+DROP TABLE IF EXISTS dat_payment;
+DROP TABLE IF EXISTS dat_parking_ticket;

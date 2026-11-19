@@ -1,0 +1,6 @@
+-- ROLLBACK MIGRATION 002
+DROP TABLE IF EXISTS mst_vehicle_type;
+DROP TABLE IF EXISTS mst_parking_location;
+DROP TABLE IF EXISTS mst_role;
+DROP TABLE IF EXISTS mst_user;
+DROP TABLE IF EXISTS mst_employee;
