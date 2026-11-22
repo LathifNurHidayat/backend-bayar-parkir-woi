@@ -13,7 +13,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"backend-bayar-parkir-woi/internal/database"
-	"backend-bayar-parkir-woi/internal/health"
+	"backend-bayar-parkir-woi/internal/router"
 )
 
 func main() {
@@ -35,13 +35,8 @@ func main() {
 
 	log.Println("Database connected successfully")
 
-	// @create new http router
-	mux := http.NewServeMux()
-
-	healthHandler := health.NewHandler(db)
-
-	// @register health check endpoint
-	mux.HandleFunc("GET /health", healthHandler.Check)
+	// @route
+	handler := router.New(db)
 
 	// @HTTP server configuration
 	port := os.Getenv("APP_PORT")
@@ -52,7 +47,7 @@ func main() {
 	// @config http server
 	server := &http.Server{
 		Addr:              ":" + port,
-		Handler:           mux,
+		Handler:           handler,
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       10 * time.Second,
 		WriteTimeout:      15 * time.Second,

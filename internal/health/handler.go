@@ -3,19 +3,14 @@ package health
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"net/http"
 	"time"
+
+	"backend-bayar-parkir-woi/internal/response"
 )
 
 type Handler struct {
 	db *sql.DB
-}
-
-type Response struct {
-	Success bool   `json:"success"`
-	Message string `json:"message"`
-	Data    any    `json:"data"`
 }
 
 func NewHandler(db *sql.DB) *Handler {
@@ -31,27 +26,21 @@ func (h *Handler) Check(w http.ResponseWriter, r *http.Request) {
 	err := h.db.PingContext(ctx)
 
 	if err != nil {
-		writeJSON(w, http.StatusServiceUnavailable, Response{
-			Success: false,
-			Message: "Service unavailable",
-			Data:    nil,
-		})
+		response.Error(
+			w,
+			http.StatusServiceUnavailable,
+			"Database Connection Failed",
+		)
 		return
 	}
 
-	writeJSON(w, http.StatusOK, Response{
-		Success: true,
-		Message: "Service is healthy",
-		Data: map[string]string{
-			"status":   "ok",
-			"database": "connected",
+	response.Success(
+		w,
+		http.StatusOK,
+		"Service is healty",
+		map[string]string{
+			"status":   "Ok",
+			"database": "Connected",
 		},
-	})
-}
-
-func writeJSON(w http.ResponseWriter, status int, response Response) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-
-	_ = json.NewEncoder(w).Encode(response)
+	)
 }
